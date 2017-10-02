@@ -1,0 +1,377 @@
+# Garrett Furlong
+# ITP 115, Spring 2017
+# Project
+# gfurlong@usc.edu
+
+from tkinter import *
+import random
+# from Enemy import Enemy
+# from Player import Player
+
+
+# Lay out our GUI
+class Application(Frame):
+
+    # class attribute
+    WIDTH = 1000
+    HEIGHT = 700
+    IMAGE_WH = 60
+    def __init__(self, window):
+        # call parent constructor, Frame
+        super().__init__(window)
+        self.grid() # displays
+
+        # canvas
+        self.canvas = Canvas(self, width=Application.WIDTH, height=Application.HEIGHT, bg="cyan")
+        self.canvas.grid()
+
+        self.sunnybackground = PhotoImage(file="sunnybackground.gif")
+        self.mariobackground = PhotoImage(file="mariobackground.gif")
+        self.lakebackground = PhotoImage(file="lakebackground.gif")
+
+        self.backgroundList = []
+        self.backgroundList.append(self.sunnybackground)
+        self.backgroundList.append(self.mariobackground)
+        self.backgroundList.append(self.lakebackground)
+
+
+        # background image
+        backgroundChoice = random.randrange(0,3)
+        if backgroundChoice == 0:
+            background = self.canvas.create_image(0, 0, image=self.sunnybackground, anchor="nw")
+        elif backgroundChoice == 1:
+            background = self.canvas.create_image(0, 0, image=self.mariobackground, anchor="nw")
+        elif backgroundChoice == 2:
+            background = self.canvas.create_image(0, 0, image=self.lakebackground, anchor="nw")
+
+        # GUI components
+        # kick off our game loop w start button
+        self.startButton = Button(self, text="Start Game", font=('monospace', 20), command=self.levelOne, width=100, relief="sunken")
+        self.buttonWindow = self.canvas.create_window(505, 360, window=self.startButton, width=140, height=30)
+
+        # import title
+        self.imageTitle = PhotoImage(file="supermariologo.gif")
+        # create title
+        self.title = self.canvas.create_image(505,100,image=self.imageTitle)
+        # bind keyboard
+        self.canvas.bind("<Key>", self.key)
+        self.canvas.focus_set()
+
+
+    # define our key event handler
+    def key(self, event):
+        if event.keysym == "Up":
+            self.canvas.move(self.mario, 0, -25)
+        elif event.keysym == "Down":
+            self.canvas.move(self.mario, 0, 25)
+        elif event.keysym == "Left":
+            self.canvas.move(self.mario, -20, 0)
+        elif event.keysym == "Right":
+            self.canvas.move(self.mario, 20, 0)
+        elif event.keysym == "w":
+            self.canvas.move(self.luigi, 0, -25)
+        elif event.keysym == "s":
+            self.canvas.move(self.luigi, 0, 25)
+        elif event.keysym == "a":
+            self.canvas.move(self.luigi, -20, 0)
+        elif event.keysym == "d":
+            self.canvas.move(self.luigi, 20, 0)
+        self.canvas.update()
+
+    def levelOne(self):
+
+        # import mario lives
+        self.imageLifeMario = PhotoImage(file="redmushroom.gif")
+        self.lifeMario1 = self.canvas.create_image(180, 80, image=self.imageLifeMario)
+        self.lifeMario2 = self.canvas.create_image(140, 80, image=self.imageLifeMario)
+        self.lifeMario3 = self.canvas.create_image(100, 80, image=self.imageLifeMario)
+        self.lifeMarioList = []
+        self.lifeMarioList.append(self.lifeMario1)
+        self.lifeMarioList.append(self.lifeMario2)
+        self.lifeMarioList.append(self.lifeMario3)
+
+        # import luigi lives
+        self.imageLifeLuigi = PhotoImage(file="greenmushroom.gif")
+        self.lifeLuigi1 = self.canvas.create_image(900, 80, image=self.imageLifeLuigi)
+        self.lifeLuigi2 = self.canvas.create_image(860, 80, image=self.imageLifeLuigi)
+        self.lifeLuigi3 = self.canvas.create_image(820, 80, image=self.imageLifeLuigi)
+        self.lifeLuigiList = []
+        self.lifeLuigiList.append(self.lifeLuigi1)
+        self.lifeLuigiList.append(self.lifeLuigi2)
+        self.lifeLuigiList.append(self.lifeLuigi3)
+
+        # import coin
+        self.imageCoin = PhotoImage(file="goldencoin.gif")
+        # create coin
+        self.coin = self.canvas.create_image(500, 500, image=self.imageCoin)
+
+
+        # import players:
+        # import Mario from Player.py
+        self.imageMario = PhotoImage(file="papermario.gif")
+        # import Luigi from Player.py
+        self.imageLuigi = PhotoImage(file="paperluigi.gif")
+        # create Mario
+        self.mario = self.canvas.create_image(70, 620, image=self.imageMario)
+        # create Luigi
+        self.luigi = self.canvas.create_image(920, 635, image=self.imageLuigi)
+
+        # build a list to categorize players
+        self.playerList = []
+        self.marioList = []
+        self.marioList.append(self.mario)
+        self.luigiList = []
+        self.luigiList.append(self.luigi)
+        self.playerList.append(self.mario)
+        self.playerList.append(self.luigi)
+
+        # import enemies:
+        # import Goombas from Enemy.py
+        self.imageGoomba = PhotoImage(file="goomba.gif")
+        self.imageGreenGoomba = PhotoImage(file="greengoomba.gif")
+        self.imageRacoonGoomba = PhotoImage(file="racoongoomba.gif")
+        self.imageEvilGoomba = PhotoImage(file="evilgoomba.gif")
+        # create goombas
+        self.goomba1 = self.canvas.create_image(350, 600, image=self.imageGoomba)
+        self.goomba2 = self.canvas.create_image(450, 400, image=self.imageGoomba)
+        self.greengoomba1 = self.canvas.create_image(550, 600, image=self.imageGreenGoomba)
+        self.greengoomba2 = self.canvas.create_image(650, 300, image=self.imageGreenGoomba)
+        self.racoongoomba1 = self.canvas.create_image(750, 600, image=self.imageRacoonGoomba)
+        self.racoongoomba2 = self.canvas.create_image(450, 500, image=self.imageRacoonGoomba)
+        self.evilgoomba1 = self.canvas.create_image(500, 500, image=self.imageEvilGoomba)
+        self.evilgoomba2 = self.canvas.create_image(650, 400, image=self.imageEvilGoomba)
+        # build lists to categorize enemies
+        self.enemyList = []
+        self.goombaList = []
+        self.greenGoombaList = []
+        self.racoonGoombaList = []
+        self.evilGoombaList = []
+        # add enemies to respective lists
+        self.goombaList.append(self.goomba1)
+        self.goombaList.append(self.goomba2)
+        self.greenGoombaList.append(self.greengoomba1)
+        self.greenGoombaList.append(self.greengoomba2)
+        self.racoonGoombaList.append(self.racoongoomba1)
+        self.racoonGoombaList.append(self.racoongoomba2)
+        self.evilGoombaList.append(self.evilgoomba1)
+        self.evilGoombaList.append(self.evilgoomba2)
+        # add all enemies to main enemyList
+        self.enemyList.append(self.goomba1)
+        self.enemyList.append(self.goomba2)
+        self.enemyList.append(self.greengoomba1)
+        self.enemyList.append(self.greengoomba2)
+        self.enemyList.append(self.racoongoomba1)
+        self.enemyList.append(self.racoongoomba2)
+        self.enemyList.append(self.evilgoomba1)
+        self.enemyList.append(self.evilgoomba2)
+
+        levelCount = 1
+        # hud
+        # self.worldhud = self.canvas.create_text(500, 175, text="WORLD 1:" + str(levelCount) , fill="white", font=('fixedsys', 30, "bold"))
+        self.mariohud = self.canvas.create_text(95, 33, text="MARIO", fill="white", font=('fixedsys', 26, "bold"))
+        self.luigihud = self.canvas.create_text(905, 35, text="LUIGI", fill="white", font=('fixedsys', 26, "bold"))
+
+        # get game going
+        self.gameLoop()
+
+
+
+    def gameLoop(self):
+
+        # deleting the start button
+        self.canvas.delete(self.buttonWindow)
+
+        marioCoords = self.canvas.bbox(self.mario)
+        luigiCoords = self.canvas.bbox(self.luigi)
+        coinCoords = self.canvas.bbox(self.coin)
+
+
+        # so mario and luigi can move off screen
+        # coords[0] is X1
+        if marioCoords[0] >= Application.WIDTH:
+            self.canvas.move(self.mario, -Application.WIDTH, 0)
+        # coords[1] is Y1
+        elif marioCoords[1] >= Application.HEIGHT:
+            self.canvas.move(self.mario, -Application.HEIGHT, 0)
+        elif marioCoords[2] <= 0:
+            self.canvas.move(self.mario, Application.WIDTH + Application.IMAGE_WH, 0)
+        elif marioCoords[3] <= 0:
+            self.canvas.move(self.mario, Application.HEIGHT, 0)
+
+        if luigiCoords[0] >= Application.WIDTH:
+            self.canvas.move(self.luigi, -Application.WIDTH, 0)
+        # coords[1] is Y1
+        elif luigiCoords[1] >= Application.HEIGHT:
+            self.canvas.move(self.luigi, -Application.HEIGHT, 0)
+        elif luigiCoords[2] <= 0:
+            self.canvas.move(self.luigi, Application.WIDTH + Application.IMAGE_WH, 0)
+        elif luigiCoords[3] <= 0:
+            self.canvas.move(self.luigi, Application.HEIGHT, 0)
+
+        # movement of coins begins:
+        self.canvas.move(self.coin, 0, -3)
+        # keeping coins on screen
+        if coinCoords[0] >= Application.WIDTH:
+            self.canvas.move(self.coin, -Application.WIDTH, 0)
+        # coords[1] is Y1
+        elif coinCoords[1] >= Application.HEIGHT:
+            self.canvas.move(self.coin, -Application.HEIGHT, 0)
+        elif coinCoords[2] <= 0:
+            self.canvas.move(self.coin, Application.WIDTH + Application.IMAGE_WH, 0)
+        elif coinCoords[3] <= 0:
+            self.canvas.move(self.coin, Application.HEIGHT, 0)
+
+
+        # adding a life if mario captures the coin
+        if marioCoinOverlap(marioCoords, coinCoords):
+            self.canvas.delete(self.coin)
+            self.lifeMarioList.append(self.lifeMario1)
+
+        # adding a life if luigi captures the coin
+        if luigiCoinOverlap(luigiCoords, coinCoords):
+            self.canvas.delete(self.coin)
+            self.lifeLuigiList.append(self.lifeLuigi1)
+
+        # removing next life from list by setting up delete values for mario and luigi
+        marioDelVal = 0
+        luigiDelVal = 0
+
+        # set up enemy coords
+        for enemy in self.enemyList:
+            enemyCoords = self.canvas.bbox(enemy)
+            # Don't let enemy go off the screen
+            if enemyCoords:  # just in case we deleted the enemy
+                if enemyCoords[0] >= Application.WIDTH:
+                    self.canvas.move(enemy, -Application.WIDTH, 0)
+                elif enemyCoords[1] >= Application.HEIGHT:
+                    self.canvas.move(enemy, 0, -Application.HEIGHT)
+                elif enemyCoords[2] <= 0:
+                    self.canvas.move(enemy, Application.WIDTH + Application.IMAGE_WH, 0)
+                elif enemyCoords[3] <= 0:
+                    self.canvas.move(enemy, 0, Application.HEIGHT)
+
+            # movement of enemies begins
+            if enemy in self.goombaList:
+                # move plain goombas straight
+                self.canvas.move(enemy, -3, 0)
+            if enemy in self.greenGoombaList:
+                # randomly move our enemies
+                randomMove = random.randrange(0, 10)
+                randomSign = random.randrange(0, 2)
+                if randomSign == 1:
+                    randomMove *= -1
+                randomXY = random.randrange(0, 2)
+                if randomXY == 0:
+                    randomX = randomMove
+                    randomY = 0
+                else:
+                    randomX = 0
+                    randomY = randomMove
+                self.canvas.move(enemy, randomX, randomY)
+            elif enemy in self.racoonGoombaList:
+                # randomly move our enemies
+                randomMove = random.randrange(0, 18)
+                randomSign = random.randrange(0, 2)
+                if randomSign == 1:
+                    randomMove *= -1
+                randomXY = random.randrange(0, 2)
+                if randomXY == 0:
+                    randomX = randomMove
+                    randomY = 0
+                else:
+                    randomX = 0
+                    randomY = randomMove
+                self.canvas.move(enemy, randomX, randomY)
+            elif enemy in self.evilGoombaList:
+                # randomly move our enemies
+                randomMove = random.randrange(0, 20)
+                randomSign = random.randrange(0, 2)
+                if randomSign == 1:
+                    randomMove *= -1
+                randomXY = random.randrange(0, 4)
+                if randomXY == 0:
+                    randomX = randomMove
+                    randomY = 0
+                else:
+                    randomX = 0
+                    randomY = randomMove
+                self.canvas.move(enemy, randomX, randomY)
+
+
+            # if enemy collides with player, delete player
+            if enemyMarioOverlap(enemyCoords, marioCoords):
+                self.canvas.delete(self.lifeMarioList[marioDelVal])
+                marioDelVal += 1
+                self.canvas.update()
+            # if enemy collides with player, delete player
+            if enemyLuigiOverlap(enemyCoords, luigiCoords):
+                self.canvas.delete(self.lifeLuigiList[luigiDelVal])
+                luigiDelVal += 1
+                self.canvas.update()
+        if len(self.lifeLuigiList) == 0:
+            self.canvas.delete(self.luigiList[0])
+            self.canvas.update()
+
+        if len(self.lifeMarioList) == 0:
+            self.canvas.delete(self.marioList[0])
+
+        # self.after(10000, self.nextLevel)
+        #  loop after x many milliseconds
+        self.after(50, self.gameLoop)
+
+
+
+def enemyMarioOverlap(enemyCoords, marioCoords):
+    if enemyCoords[2] < marioCoords[0]:
+        return False
+    if enemyCoords[0] > marioCoords[2]:
+        return False
+    if enemyCoords[3] > marioCoords[1]:
+        return False
+    elif enemyCoords[2] > marioCoords[3]:
+        return False
+    return True
+
+def enemyLuigiOverlap(enemyCoords, luigiCoords):
+    if enemyCoords[2] < luigiCoords[0]:
+        return False
+    if enemyCoords[0] > luigiCoords[2]:
+        return False
+    if enemyCoords[3] > luigiCoords[1]:
+        return False
+    if enemyCoords[2] > luigiCoords[3]:
+        return False
+    return True
+
+def marioCoinOverlap(marioCoords, coinCoords):
+    if marioCoords[2] < coinCoords[0]:
+        return False
+    if marioCoords[0] > coinCoords[2]:
+        return False
+    if marioCoords[3] > coinCoords[1]:
+        return False
+    if marioCoords[2] > coinCoords[3]:
+        return False
+    return True
+
+def luigiCoinOverlap(luigiCoords, coinCoords):
+    if luigiCoords[2] < coinCoords[0]:
+        return False
+    if luigiCoords[0] > coinCoords[2]:
+        return False
+    if luigiCoords[3] > coinCoords[1]:
+        return False
+    if luigiCoords[2] > coinCoords[3]:
+        return False
+    return True
+
+
+
+def main():
+    root = Tk()
+    root.title("Goomba Trap")
+    root.geometry("1000x700")
+    app = Application(root)
+    root.mainloop()
+
+main()
